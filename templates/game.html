@@ -1,0 +1,58 @@
+<html>
+  <script
+src="https://code.jquery.com/jquery-3.2.1.min.js"
+integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+crossorigin="anonymous"></script>
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+
+  <body>
+    Client ID: <span id='client-id'></span>
+    <br/>
+    Session ID: <span id='session-id'></span>
+    <br/>
+    <button id='send-move'>Send move</button>
+    <div id='updates'>
+    </div>
+  </body>
+
+  <script type="text/javascript" charset="utf-8">
+var socket = io.connect('http://' + document.domain + ':' + location.port);
+socket.on('connect', function(data) {
+  console.log('Connected!');
+  socket.emit('join',
+      {% if session_id is defined %}
+      {'session_id': '{{ session_id }}' }
+      {% else %}
+      {} /* no data */
+      {% endif %}
+      );
+
+});
+
+var client_id = null;
+var session_id = null;
+
+socket.on('on_join', function(data) {
+  console.log(data);
+  client_id = data['client_id']
+  session_id = data['session_id']
+
+  $('#client-id').text(client_id)
+  $('#session-id').text(session_id)
+});
+
+socket.on('update_state', function(data) {
+  console.log(data);
+  $('#updates').append('<div>' + data['update'] + '</div>');
+});
+
+
+$('#send-move').click(function() {
+  console.log('Making move');
+  socket.emit('make_move', {client_id: client_id, session_id: session_id,
+  move: client_id});
+});
+  </script>
+
+</html>
