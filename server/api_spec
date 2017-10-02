@@ -1,0 +1,96 @@
+client: join = {
+  username: string
+  game_id: string
+}
+
+server: on_lobby_update = {
+  players: list of string (names)
+}
+
+client: start_game = {
+}
+
+client: make_move = Action
+
+server: on_start_game = {
+  // General game state
+  player_to_wind: {
+    Wind: string (player name)
+  }
+  prevalent_wind: Wind
+  tiles_left: number
+
+  // My player
+  seat_wind: Wind
+  flower_count: number
+  hidden_tiles: list of Tile (no order)
+  allowed_actions: list of Action (no order)
+
+  // Other players
+  players: {
+    Wind: {
+      flower_count: number
+    }
+  }
+}
+
+server: on_game_update = {
+  // General game state
+  current_player: Wind
+  tiles_left: number
+  new_discarded_tile: Tile
+
+  // My player
+  flower_count: number
+  drawn_tile: Tile
+  hidden_tiles: list of Tile (no order)
+  new_melded_set: {
+    tiles: list of Tile (ordered)
+    hidden_kong: boolean
+  }
+  allowed_actions: list of Action (no order)
+
+  // Other players
+  players: {
+    Wind: {
+      flower_count: number
+      hidden_tile_count: number
+      new_melded_set: {
+        {
+          tiles: list of Tile (ordered), or empty if hidden_kong is true
+          hidden_kong: boolean
+        }
+      }
+    }
+  }
+}
+
+Action = {
+  action: ActionType
+  // if DISCARD
+  discard_tile: Tile
+  // if CHOW, PONG, or KONG
+  melded_set: list of Tile (ordered)
+}
+
+enum Wind {
+  EAST = 0
+  SOUTH = 1
+  WEST = 2
+  NORTH = 3
+}
+
+enum Tile {
+  // All types of tiles
+}
+
+enum ActionType {
+  DRAW = 0
+  CHOW = 1
+  PONG = 2
+  KONG = 3
+  WIN = 4
+  PASS = 5 // e.g. choose not to PONG
+  DISCARD = 6
+}
+

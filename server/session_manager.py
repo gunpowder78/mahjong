@@ -5,71 +5,57 @@ from server import session
 class GameSessionManager:
   def __init__(self):
     self.sessions = {}
-    self.client_to_session_ids = {}
-    self.lock = threading.Lock()
+    self.client_to_game_ids = {}
 
-  def add_client_to_session(self, client_id, session_id):
-    self.lock.acquire()
+  def add_client_to_session(self, client_id, username, game_id):
+    if client_id in self.client_to_game_ids:
+      # TODO: client error
+      pass
 
-    # Lock this entire operation to prevent
-    # - a client joining two sessions
-    # - another client leaving the session and deleting it while this client
-    #   tries to join
-    # - two clients trying to be the first ones to join this session
-    try:
-      if client_id in self.client_to_session_ids:
+    if game_id not in self.sessions:
+      game_session = session.GameSession()
+      self.sessions[game_id] = game_session
+    else:
+      game_session = self.sessions[game_id]
+      if not game_session.can_accept_more_clients():
         # TODO: client error
         pass
 
-      if session_id not in self.sessions:
-        desired_session = session.GameSession()
-        self.sessions[session_id] = desired_session
-      else:
-        desired_session = self.sessions[session_id]
-        if not desired_session.can_accept_more_clients():
-          # TODO: client error
-          pass
+    self.client_to_game_ids[client_id] = game_id
+    game_session.add_client(client_id, username)
+    return game_session
 
-      desired_session.add_client(client_id)
-      self.client_to_session_ids[client_id] = session_id
-    finally:
-      self.lock.release()
+  def get_client_session(self, client_id):
+    if client_id not in self.client_to_game_ids:
+      # TODO: client error
+      pass
 
-  def get_session_for_client(self, client_id):
-    self.lock.acquire()
+    game_id = self.client_to_game_ids[client_id]
+    if game_id not in self.sessions:
+      # TODO: server error
+      pass
+    return self.sessions[game_id]
 
-    try:
-      if client_id not in self.client_to_session_ids:
-        # TODO: client error
-        pass
+  def get_game_session(self, game_id):
+    if game_id not in self.sessions:
+      # TODO: server error
+      pass
+    return self.sessions[game_id]
 
-      session_id = self.client_to_session_ids[client_id]
-      if session_id not in self.sessions:
-        # TODO: server error
-        pass
-      return self.sessions[session_id]
-    finally:
-      self.lock.release()
+  def remove_client(self, client_id):
+    if client_id not in self.client_to_game_ids:
+      # TODO: client error
+      pass
+    game_id = self.client_to_game_ids[client_id]
+    if game_id not in self.sessions:
+      # TODO: server error
+      pass
+    game_session = self.sessions[game_id]
 
+    game_session.remove_client(client_id)
+    if not game_session.has_clients():
+      game_session.close()
+      del self.sessions[game_id]
 
-  def remove_client_from_session(self, client_id):
-    self.lock.acquire()
-
-    # TODO: does this entire thing need to be locked?
-    try:
-      if client_id not in self.client_to_session_ids:
-        # TODO: client error
-        pass
-      session_id = self.client_to_session_ids[client_id]
-      if session_id not in self.sessions:
-        # TODO: server error
-        pass
-      current_session = self.sessions[session_id]
-
-      current_session.remove_client(client_id)
-      if not current_session.has_clients():
-        current_session.close()
-        del self.sessions[session_id]
-    finally:
-      self.lock.release()
+    return game_id
 

@@ -1,3 +1,4 @@
+import random
 import threading
 from game import game
 
@@ -7,61 +8,47 @@ class GameSession:
   MAX_ALLOWED_CLIENTS = 4
 
   def __init__(self):
-    self.clients = set()
-    self.game = None
-    self.lock = threading.RLock()
+    self.client_to_name = {}
+    # self.client_seat_order = None
+    # self.game = None
 
   def can_accept_more_clients(self):
-    self.lock.acquire()
-    try:
-      return len(self.clients) < self.MAX_ALLOWED_CLIENTS
-    finally:
-      self.lock.release()
+    return len(self.client_to_name) < self.MAX_ALLOWED_CLIENTS
 
   def has_clients(self):
-    self.lock.acquire()
-    try:
-      return len(self.clients) > 0
-    finally:
-      self.lock.release()
+    return len(self.client_to_name) > 0
 
-  def add_client(self, client_id):
-    self.lock.acquire()
-    try:
-      if not self.can_accept_more_clients():
-        # TODO:
-        pass
-      self.clients.add(client_id)
-    finally:
-      self.lock.release()
+  def add_client(self, client_id, username):
+    if not self.can_accept_more_clients():
+      # TODO:
+      pass
+    self.client_to_name[client_id] = username
 
-  def begin_game(self):
-    # TODO: setup mapping of clients to player seats(winds)
-    self.game = game.MahJongState()
-    self.game.begin()
+  def get_players(self):
+    return list(self.client_to_name.values())
 
-  def accept_move_from(self, client_id, move):
-    # TODO
-    print('Got move from client: ' + str(client_id))
+  def start_new_game(self):
+    # self._set_randomized_seating()
+    # self.game = game.MahJongState()
+    # self.game.begin()
+    return self._make_fake_updates('Begin game')
+
+  def make_move(self, client_id, move):
+    return self._make_fake_updates(client_id + ' moved: ' + str(move))
+
+  def _make_fake_updates(self, update):
     updates = {}
-    for client in self.clients:
-      updates[client] = client_id
+    for client in self.client_to_name:
+      updates[client] = update
     return updates
 
-  def restart_game(self):
-    self.game.end_game()
-    self.begin_game()
-
   def remove_client(self, client_id):
-    self.lock.acquire()
-    try:
-      if client_id not in self.clients:
-        # TODO:
-        pass
-      self.clients.remove(client_id)
-    finally:
-      self.lock.release()
+    if client_id not in self.client_to_name:
+      # TODO:
+      pass
+    del self.client_to_name[client_id]
 
   def close(self):
     # TODO
     pass
+
