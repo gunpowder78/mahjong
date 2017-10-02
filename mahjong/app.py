@@ -56,6 +56,7 @@ def handle_join(data):
   game_id = game_sessions.remove_client(client_id)
   game_session = game_sessions.get_game_session(game_id)
 
+  # TODO: last person to leave
   flask_socketio.leave_room(game_id)
   flask_socketio.emit('on_lobby_update', {'players': game_session.get_players()}, room=game_id)
 

@@ -34,8 +34,6 @@ Some tutorials to familiarize with:
 1.  From a terminal, start up the server
 
     ```
-    export FLASK_APP=app.py
-    export FLASK_DEBUG=1
-    flask run
+    ./run-server
     ```
 2.  In a browser, navigate to `http://localhost:5000`
