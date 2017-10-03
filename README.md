@@ -6,8 +6,10 @@ A simple MahJong online game.
 
 Some tutorials to familiarize with:
 
-* [Flask](http://flask.pocoo.org/docs/0.12/quickstart/)
-* [Flask-SocketIO](https://flask-socketio.readthedocs.io/en/latest/)
+*   [Flask](http://flask.pocoo.org/docs/0.12/quickstart/)
+*   [Flask-SocketIO](https://flask-socketio.readthedocs.io/en/latest/)
+*   [React.js](https://reactjs.org/tutorial/tutorial.html)
+*   [webpack](https://webpack.js.org/guides/getting-started/)
 
 ### Setup
 
@@ -29,6 +31,21 @@ Some tutorials to familiarize with:
     pip install -r requirements.txt
     ```
 
+### Build frontend React code
+
+1.  Install [node.js](https://nodejs.org/en/)
+2.  Install javascript dependencies (see `package.json`):
+
+    ```
+    npm install
+    ```
+3.  Build frontend code (located at `frontend/index.js`) into
+    `mahjong/static/bundle.js`:
+
+    ```
+    ./node_modules/.bin/webpack --config webpack.config.js
+    ```
+
 ### Run server locally
 
 1.  From a terminal, start up the server
@@ -37,3 +54,4 @@ Some tutorials to familiarize with:
     ./run-server
     ```
 2.  In a browser, navigate to `http://localhost:5000`
+
