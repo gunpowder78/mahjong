@@ -2,6 +2,9 @@
   "name": "mahjong",
   "version": "1.0.0",
   "description": "A simple MahJong online game.",
+  "scripts": {
+    "build": "./node_modules/.bin/webpack --config webpack.config.js"
+  },
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",

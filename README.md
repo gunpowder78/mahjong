@@ -43,7 +43,7 @@ Some tutorials to familiarize with:
     `mahjong/static/bundle.js`:
 
     ```
-    ./node_modules/.bin/webpack --config webpack.config.js
+    npm run build
     ```
 
 ### Run server locally

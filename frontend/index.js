@@ -15,18 +15,20 @@ class Lobby extends React.Component {
       moves: [],
     }
 
-    this.client = new GameClient();
+    this.client = new GameClient((error) => this.handleError(error));
     this.client.onLobbyUpdate((data) => this.onLobbyUpdate(data));
     this.client.onStartGame((data) => this.onStartGame(data));
     this.client.onGameUpdate((data) => this.onGameUpdate(data));
   }
 
-  joinGame() {
-    if (this.state.username != '' && this.state.game_id != '') {
-      this.client.joinGame(this.state.username, this.state.game_id);
-    } else {
-      console.log("Can't join game. Missing username or game id");
+  handleError(error) {
+    if (error !== undefined) {
+      console.log(error);
     }
+  }
+
+  joinGame() {
+    this.client.joinGame(this.state.username, this.state.game_id);
   }
 
   onLobbyUpdate(data) {

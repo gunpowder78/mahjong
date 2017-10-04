@@ -2,9 +2,11 @@ import io from 'socket.io-client';
 
 export class GameClient {
 
-  constructor() {
+  constructor(errorHandler) {
+    this.errorHandler = errorHandler;
+
     // Connect to the websocket server.
-    var socket = io.connect('http://' + document.domain + ':' + location.port);
+    const socket = io.connect('http://' + document.domain + ':' + location.port);
     socket.on('connect', function(data) {
       console.log('Connected!');
     });
@@ -16,7 +18,7 @@ export class GameClient {
     var data = {username: username, game_id: game_id};
     console.log('Sending join request:');
     console.log(data);
-    this.socket.emit('join', data);
+    this.socket.emit('join', data, this.errorHandler);
   }
 
   onLobbyUpdate(callback) {
@@ -29,7 +31,7 @@ export class GameClient {
 
   startGame() {
     console.log('Sending start game request');
-    this.socket.emit('start_game', {});
+    this.socket.emit('start_game', {}, this.errorHandler);
   }
 
   onStartGame(callback) {
@@ -43,7 +45,7 @@ export class GameClient {
   sendMove(data) {
     console.log('Sending move request:');
     console.log(data);
-    this.socket.emit('make_move', data);
+    this.socket.emit('make_move', data, this.errorHandler);
   }
 
   onGameUpdate(callback) {
@@ -56,7 +58,7 @@ export class GameClient {
 
   leaveGame() {
     console.log('Sending leave game request:');
-    this.socket.emit('leave', {});
+    this.socket.emit('leave', {}, this.errorHandler);
   }
 }
 
