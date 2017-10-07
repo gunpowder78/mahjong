@@ -1,17 +1,44 @@
+"""Game logic."""
 import random
 
-class Seat:
-  """Mahjong labels each seat with a wind. The turn order is EAST, SOUTH, WEST,
-  NORTH.
+class MahjongState(object):
+  """The state of a Mahjong game.
+
+  Attributes:
+    tiles: a list of Tile objects
   """
-  EAST = 0
-  SOUTH = 1
-  WEST = 2
-  NORTH = 3
+  def __init__(self, players, config):
+    self.config = config
+    self.deck = []
+
+  def copy(self):
+    """Creates a new copy of a MahjongState."""
+    pass
+
+  def score(self, seat):
+    """Score the .
+
+    Returns the score of a hand. The hand does not need to be legal or even
+    completed to be scored.
+    """
+    pass
+
+
+class PlayerState(MahjongState):
+  """The state of a game, as visible to a player."""
+  @staticmethod
+  def player_state(mahjong_state, player):
+    player_state = PlayerState()
+
+
+class Player(object):
+    def __init__(self)
+
 
 class Move:
   """A single player's move."""
   pass
+
 
 class StateDiff:
   """Diff a single player's view of the game. Here, diff means the change in
