@@ -1,36 +1,6 @@
 """Game logic."""
 import random
 
-class MahjongState(object):
-  """The state of a Mahjong game.
-
-  Attributes:
-    tiles: a list of Tile objects
-  """
-  def __init__(self, players, config):
-    self.config = config
-    self.deck = []
-
-  def copy(self):
-    """Creates a new copy of a MahjongState."""
-    pass
-
-  def score(self, seat):
-    """Score the .
-
-    Returns the score of a hand. The hand does not need to be legal or even
-    completed to be scored.
-    """
-    pass
-
-
-class PlayerState(MahjongState):
-  """The state of a game, as visible to a player."""
-  @staticmethod
-  def player_state(mahjong_state, player):
-    player_state = PlayerState()
-
-
 class Player(object):
     def __init__(self)
 

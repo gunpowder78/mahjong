@@ -25,10 +25,10 @@ class ComputerPlayer(Player):
 
 class PlayerAction(object):
   def apply_action(self, game_state):
-    """Applies an action.
+    """Applies an action."""
+    pass
 
-    Applies an action
-    """
+  def is_legal(self, game_state):
     pass
 
 class NullAction(PlayerAction):
@@ -40,31 +40,55 @@ class NullAction(PlayerAction):
   that a single human player doesn't have to wait more than necessary for
   computer players to choose an action, and so that simulations of four
   computer players can go more quickly.
+
+  Valid only during draw phase.
   """
-  def is_legal(self, game_state):
-    return False
 
 class DrawAction(PlayerAction):
-  """Player draws a tile on their turn."""
+  """Player draws a tile on their turn.
+
+  Valid only during draw phase.
+  """
   pass
 
-class ChiAction(PlayerAction):
-  """Player calls a tile for a chi."""
+
+class ChowAction(PlayerAction):
+  """Player calls a tile for a chow.
+
+  Valid only during draw phase.
+  """
   pass
 
-class PengAction(PlayerAction):
-  """Player calls a tile for a peng."""
+
+class PongAction(PlayerAction):
+  """Player calls a tile for a pong.
+
+  Valid only during draw phase.
+  """
   pass
 
-class DiscardsAction(PlayerAction):
-  """Player discards a tile."""
-  pass
 
-class GongAction(PlayerAction):
-  """Player declares a Gong."""
-  pass
+class DiscardAction(PlayerAction):
+  """Player discards a tile.
+
+  Valid only during discard phase.
+  """
+  def __init__(self, tile):
+    self.tile = tile
+
+class TileSetAction(PlayerAction):
+  """Player reveals a TileSet.
+
+  Valid during call or discard phase.
+  """
+  def __init__(self, tile_set):
+    self.tile_set = tile_set
+
 
 class HuAction(PlayerAction):
-  """Player declares victory."""
+  """Player declares victory.
+
+  Valid during the draw or discard phase.
+  """
   pass
 

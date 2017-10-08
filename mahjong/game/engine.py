@@ -1,15 +1,9 @@
 """The game engine, which drives the game."""
 import enum
 
-from game import exceptions
-
-
-class Seat(enum.IntEnum):
-  """Mahjong seat positions. The turn order is EAST, SOUTH, WEST, NORTH."""
-  EAST = 0
-  SOUTH = 1
-  WEST = 2
-  NORTH = 3
+from game import exception
+from game import player
+from game import state
 
 
 class MahjongEngine(object):
@@ -20,23 +14,22 @@ class MahjongEngine(object):
   During the draw state, the engine listens for PlayerActions, and .
   Legal player actions includes:
     - DrawAction (from current player): Enter discard phase.
-    - ChiAction (from current player): Enter call phase.
-    - PengAction (from any player): Enter call phase. Set current player to
+    - ChowAction (from current player): Enter call phase.
+    - PongAction (from any player): Enter call phase. Set current player to
       caller.
     - HuAction (from any player): End game.
 
   During the call state, the engine waits for the player who called the tile to
   reveal which tiles a player is calling the tile with. Legal player actions
   includes:
-    - CallAction (from current player): Enter discard phase. If the player uses
-      three pieces to call a discard, then the Gong flag is set.
+    - TileSetAction (from current player): Enter discard phase.
 
   During the discard state, the engine waits for the player whose turn it is to
   either declare a gong or discard.  If this state is entered with the Gong
   flag set, then the player receives an additional tile.  Legals player actions
   includes:
     - DiscardAction (from current player): Increment
-    - GongAction (from current player): In
+    - TileSetAction (from current player): 
     - HuAction (from current player)
 
   TODO(jeffreylu): Too lengthy. Move this description elsewhere.
@@ -57,12 +50,12 @@ class MahjongEngine(object):
   def initialize_player(self, player):
     """Initialize a player."""
     # We don't want to pass the engine directly to players, or else they can
-    # see the entire state of the game. Instead we'll pass a hook to the event
+    # see the entire state of the game. Instead we'll pass a hook to the action
     # handler.
-    player.action_hook = lambda action: self.event_handler(player, action)
+    player.action_hook = lambda action: self.action_handler(player, action)
 
-  def event_handler(self, player, action):
-    """Handle a player action.
+  def action_handler(self, player, action):
+    """Handle a PlayerAction.
 
     Raises:
       IllegalMoveException: PlayerAction is illegal.
@@ -70,7 +63,7 @@ class MahjongEngine(object):
     pass
 
   def notify_players(self, game_event):
-    """Notify players of a new game event."""
+    """Notify players of a new GameEvent."""
     pass
 
   def start_game(self):

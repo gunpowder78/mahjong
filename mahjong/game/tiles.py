@@ -1,5 +1,4 @@
 """Game tiles."""
-import enum
 
 
 class Tile(object):
@@ -8,11 +7,13 @@ class Tile(object):
   Attributes:
     value: An integer value of a tile.
     turn: An integer turn number the tile was drawn.
-    is_melded:
+    seat: An integer indicating the seat that drew this tile.
+    draw_num: The tile number, indicating the order this was drawn.
   """
   def __init__(self, suit, value):
     self.suit = suit
     self.value = value
+    self.seat = None
 
   def __eq__(self, other):
     return type(self) is type(other) and self.value == other.value
@@ -23,6 +24,7 @@ class Tile(object):
 
 class Suit(object):
   TILE_VALUES = {}
+  NUM_TILES = 4
 
 
 class SerialSuit(Suit):
@@ -44,7 +46,7 @@ class HonorSuit(Suit):
 
 
 class BonusSuit(Suit):
-  pass
+  NUM_TILES = 1
 
 
 ###########
@@ -65,32 +67,59 @@ class Character(SerialSuit):
 
 class Wind(HonorSuit):
   TILE_VALUES = {
-    'EAST': 0
-    'SOUTH': 1
-    'WEST': 2
-    'NORTH': 3
+    'EAST': 'EAST',
+    'SOUTH': 'SOUTH',
+    'WEST': 'WEST',
+    'NORTH': 'NORTH',
   }
 
 class Dragon(HonorSuit):
   TILE_VALUES = {
-    'GREEN': 0
-    'RED': 1
-    'WHITE': 2
+    'GREEN': 'GREEN',
+    'RED': 'RED',
+    'WHITE': 'BLUE',
   }
 
 class Flower(BonusSuit):
   TILE_VALUES = {
-    'PLUM': 0
-    'ORCHID': 1
-    'BAMBOO': 2
-    'CHRYSANTHEMUM': 3
+    'PLUM': 'PLUM',
+    'ORCHID': 'ORCHID',
+    'BAMBOO': 'BAMBOO',
+    'CHRYSANTHEMUM': 'CHRYSANTHEMUM',
   }
 
 class Season(BonusSuit):
   TILE_VALUES = {
-    'SPRING': 0
-    'SUMMER': 1
-    'FALL': 2
-    'WINTER': 3
+    'SPRING': 'SPRING',
+    'SUMMER': 'SUMMER',
+    'FALL': 'FALL',
+    'WINTER': 'WINTER',
   }
+
+
+###############
+## Tile Sets ##
+###############
+
+class TileSet(object):
+  def __init__(self, tiles, hidden=True):
+    self.tiles = tuple(tiles)
+    self.hidden = hidden
+
+  def find_in_tiles(self, tiles):
+    raise NotImplementedError
+
+class ChowSet(TileSet):
+  def __init__(self, tiles, hidden=True):
+    self.tiles = tuple(tiles)
+    self.hidden = hidden
+
+class PongSet(TileSet):
+  pass
+
+class KongSet(PongSet):
+  pass
+
+class WeavedSet(TileSet):
+  pass
 
